@@ -8,13 +8,11 @@ set -exov
 # Install build tools
 echo [minimeteor] Installing build tools
 apt-get -qq update
-apt-get -y install curl procps python g++ make sudo git bzip2 libc6 >/dev/null
+apt-get -y install curl procps python g++ make sudo git bzip2 libc6 rsync>/dev/null
 
 # Create non-root user
 useradd -m user
-sudo -u user cp -r /app /home/user/
-rm -rf /home/user/app/.meteor/local
-rm -rf /home/user/app/node_modules
+sudo -u user rsync -av --exclude ".git" --exclude "/app/.meteor/local" --exclude "/app/node_modules" /app /home/user/
 cd /home/user/app
 
 # Setup auth for private npm modules
@@ -26,6 +24,9 @@ fi
 # Install Meteor
 echo [minimeteor] Installing Meteor
 sudo -u user curl "https://install.meteor.com/" | sh
+
+# set npm taobao mirror
+sudo -u user /minimeteor/npmtaobao.sh
 
 # Install NPM packages
 echo [minimeteor] Installing NPM dependencies
@@ -56,6 +57,6 @@ rm -rf /home/user/.meteor
 rm -rf /tmp
 
 # Remove build tools and empty cache
-apt-get -y --purge autoremove curl procps python g++ make git bzip2 libc6
+apt-get -y --purge autoremove curl procps python g++ make git bzip2 libc6 rsync
 apt-get -y clean
 rm -rf /var/lib/apt/lists/*
