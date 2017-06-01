@@ -5,13 +5,7 @@
 # Fail and exit if any build command fails below
 set -exov
 
-# Install build tools
-echo [minimeteor] Installing build tools
-apt-get -qq update
-apt-get -y install curl procps python g++ make sudo git bzip2 rsync>/dev/null
-
-# Create non-root user
-useradd -m user
+# copy source files
 sudo -u user rsync -av --exclude ".git" --exclude "/app/.meteor/local" --exclude "/app/node_modules" /app /home/user/
 cd /home/user/app
 
@@ -20,10 +14,6 @@ if [ -n $NPM_TOKEN ]
 then
   echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
 fi
-
-# Install Meteor
-echo [minimeteor] Installing Meteor
-sudo -u user curl "https://install.meteor.com/" | sh
 
 # set npm taobao mirror
 sudo -u user /minimeteor/npmtaobao.sh

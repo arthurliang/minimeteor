@@ -3,6 +3,28 @@ FROM arthurliang/debian:wheezy-slim
 
 ADD ./*.sh /minimeteor/
 
+# Install build tools
+RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+      curl \
+      procps \
+      python \
+      g++ \
+      make \
+      sudo \
+      git \
+      bzip2 \
+      rsync
+
+# Create non-root user
+RUN useradd -m user
+
+# install Meteor
+RUN sudo -u user curl -sL "https://install.meteor.com/" | sed s/--progress-bar/-sL/g | sh
+
+
+# We call the "meteor" command for the first time which will install the Meteor binaries in ~/.meteor.
+RUN sudo -u user meteor --help
+
 ONBUILD ARG NPM_TOKEN
 ONBUILD ADD . /app
 ONBUILD WORKDIR /app
