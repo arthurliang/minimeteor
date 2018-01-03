@@ -11,7 +11,6 @@ apt-get -qq update
 apt-get -y install curl procps python g++ make sudo git bzip2 libc6 rsync>/dev/null
 
 # Create non-root user
-useradd -m user
 sudo -u user rsync -av --exclude ".git" --exclude "/app/.meteor/local" --exclude "/app/node_modules" /app /home/user/
 cd /home/user/app
 
