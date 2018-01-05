@@ -15,9 +15,6 @@ RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
       bzip2 \
       rsync
 
-# Create non-root user
-RUN useradd -m user
-
 # install Meteor
 RUN sudo -u user curl -sL "https://install.meteor.com/" | sed s/--progress-bar/-sL/g | sh
 
